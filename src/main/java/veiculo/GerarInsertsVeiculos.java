@@ -1,9 +1,9 @@
 package veiculo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.IntStream.range;
 
 public class GerarInsertsVeiculos {
 
@@ -25,19 +25,15 @@ public class GerarInsertsVeiculos {
     }
 
     private static List<String> gerarInsertsVeiculos(int quantidade) {
-        List<String> inserts = new ArrayList<>();
-        List<String> placas = GeradorPlacas.gerarPlacas(quantidade);
-        var random = new Random();
-
-        for (int indice = 0; indice < quantidade; indice++) {
-            var insert = insertVeiculos(random, placas, indice);
-            inserts.add(insert);
-        }
-
-        return inserts;
+        return range(0, quantidade)
+                .mapToObj(indice -> insertVeiculos(indice, quantidade))
+                .collect(toList());
     }
 
-    private static String insertVeiculos(Random random, List<String> placas, int indice) {
+    private static String insertVeiculos(int indice, int quantidade) {
+        var random = new Random();
+        var placas = GeradorPlacas.gerarPlacas(quantidade);
+
         return String.format(
                 """
                 INSERT INTO public.vehicle (brand, color, model, plate, monitored, type, registration_date)
